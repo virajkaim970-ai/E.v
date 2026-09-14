@@ -9,7 +9,8 @@
   :root{ --cyan:#3fe0ff; --amber:#ffb020; --red:#ff4444; --green:#78ffb4; }
   *{box-sizing:border-box; -webkit-tap-highlight-color:transparent;}
   html,body{margin:0;padding:0;height:100%;overflow:hidden;background:#02060a;color:var(--cyan);
-    font-family:'Share Tech Mono',monospace;user-select:none;}
+    font-family:'Share Tech Mono',monospace;user-select:none;transition:opacity .3s;}
+  body.privacy{opacity:0.15;}
   #camera{position:fixed;inset:0;width:100%;height:100%;object-fit:cover;z-index:0;
     filter:saturate(.55) contrast(1.15) brightness(.72) hue-rotate(160deg);}
   #canvas{position:fixed;inset:0;width:100%;height:100%;z-index:1;touch-action:none;}
@@ -46,7 +47,7 @@
   .sub{font-size:9px;opacity:.6;letter-spacing:.22em;margin-top:3px;}
   #clock{text-align:right;font-size:12px;color:#fff;}
   #clock .lbl{font-size:9px;opacity:.55;letter-spacing:.22em;}
-  #telemetry{position:fixed;left:16px;bottom:96px;z-index:6;width:200px;padding:10px 12px;border-left:2px solid var(--cyan);
+  #telemetry{position:fixed;left:16px;bottom:96px;z-index:6;width:220px;padding:10px 12px;border-left:2px solid var(--cyan);
     background:linear-gradient(90deg,rgba(0,20,30,.72),rgba(0,20,30,0));font-size:10.5px;letter-spacing:.08em;line-height:1.75;pointer-events:none;}
   #telemetry .row{display:flex;justify-content:space-between;}
   #telemetry .k{opacity:.55;}
@@ -75,24 +76,30 @@
   #log .a b{color:#fff;font-weight:400;}
   #log .err{color:var(--red);}
   #log .err b{color:var(--red);font-weight:400;}
-  #dock{position:fixed;right:16px;bottom:20px;z-index:8;display:flex;gap:12px;align-items:center;}
-  .btn{width:60px;height:60px;border-radius:50%;border:1px solid rgba(63,224,255,.35);background:rgba(0,25,38,.6);
-    color:var(--cyan);font-size:22px;display:flex;align-items:center;justify-content:center;backdrop-filter:blur(4px);transition:all .18s;
+  #log .evt{color:var(--amber);}
+  #log .evt b{color:var(--amber);font-weight:400;}
+  #dock{position:fixed;right:16px;bottom:20px;z-index:8;display:flex;gap:10px;align-items:center;}
+  .btn{width:56px;height:56px;border-radius:50%;border:1px solid rgba(63,224,255,.35);background:rgba(0,25,38,.6);
+    color:var(--cyan);font-size:21px;display:flex;align-items:center;justify-content:center;backdrop-filter:blur(4px);transition:all .18s;
     cursor:pointer;font-family:inherit;}
   .btn:active{transform:scale(.92);}
   .btn.live{border-color:var(--red);color:var(--red);box-shadow:0 0 22px rgba(255,68,68,.5);animation:pulse 1.1s ease-in-out infinite;}
   @keyframes pulse{50%{box-shadow:0 0 6px rgba(255,68,68,.25);}}
-  .btn.sm{width:46px;height:46px;font-size:17px;}
+  .btn.sm{width:44px;height:44px;font-size:16px;}
+  .btn.enroll{border-color:rgba(120,255,180,.5);color:var(--green);}
+  .btn.proactive{border-color:rgba(255,176,32,.5);color:var(--amber);}
+  .btn.proactive.on{background:rgba(255,176,32,.25);box-shadow:0 0 14px rgba(255,176,32,.6);}
   #status{position:fixed;top:16px;left:50%;transform:translateX(-50%);z-index:7;font-size:10px;letter-spacing:.28em;
     padding:5px 16px;border:1px solid rgba(63,224,255,.35);background:rgba(0,20,30,.55);backdrop-filter:blur(3px);text-transform:uppercase;pointer-events:none;}
   #status.hot{border-color:rgba(255,176,32,.6);color:var(--amber);}
   #status.err{border-color:rgba(255,68,68,.6);color:var(--red);}
-  #textForm{position:fixed;left:16px;bottom:20px;z-index:8;display:flex;gap:6px;align-items:center;width:min(360px,52vw);}
+  #status.ok{border-color:rgba(120,255,180,.6);color:var(--green);}
+  #textForm{position:fixed;left:16px;bottom:20px;z-index:8;display:flex;gap:6px;align-items:center;width:min(320px,46vw);}
   #textInput{flex:1;padding:12px 14px;background:rgba(0,25,38,.85);border:1px solid rgba(63,224,255,.35);
     color:#fff;font-family:'Share Tech Mono',monospace;font-size:13px;border-radius:2px;outline:none;min-width:0;}
   #textInput::placeholder{color:rgba(63,224,255,.4);}
-  #textSend{width:46px;height:46px;border-radius:50%;border:1px solid rgba(63,224,255,.35);background:rgba(0,25,38,.6);
-    color:var(--cyan);font-size:18px;display:flex;align-items:center;justify-content:center;cursor:pointer;font-family:inherit;}
+  #textSend{width:44px;height:44px;border-radius:50%;border:1px solid rgba(63,224,255,.35);background:rgba(0,25,38,.6);
+    color:var(--cyan);font-size:17px;display:flex;align-items:center;justify-content:center;cursor:pointer;font-family:inherit;}
   #setup{position:fixed;inset:0;z-index:100;background:#010407;display:none;flex-direction:column;
     justify-content:center;padding:0 30px;font-size:13px;letter-spacing:.06em;line-height:1.9;}
   #setup h1{font-family:'Rajdhani',sans-serif;font-weight:700;font-size:38px;letter-spacing:.4em;color:#fff;margin:0 0 4px;}
@@ -108,6 +115,24 @@
   #setupMsg{margin-top:14px;font-size:11px;letter-spacing:.08em;min-height:18px;word-wrap:break-word;}
   #setupMsg.ok{color:var(--green);}
   #setupMsg.err{color:var(--red);}
+  #toast{position:fixed;top:70px;left:50%;transform:translateX(-50%);z-index:9;
+    padding:10px 20px;background:rgba(0,25,38,.95);border:1px solid var(--green);color:var(--green);
+    font-size:12px;letter-spacing:.16em;text-transform:uppercase;pointer-events:none;opacity:0;transition:opacity .3s;}
+  #toast.on{opacity:1;}
+  #qmenu{position:fixed;inset:0;z-index:20;background:rgba(0,4,8,.85);display:none;
+    flex-direction:column;justify-content:center;align-items:center;padding:40px 30px;backdrop-filter:blur(6px);}
+  #qmenu.on{display:flex;}
+  #qmenu h2{font-family:'Rajdhani',sans-serif;font-weight:700;font-size:22px;letter-spacing:.36em;color:#fff;margin:0 0 20px;}
+  #qmenu .grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;width:100%;max-width:460px;}
+  #qmenu button{padding:16px 12px;background:rgba(0,25,38,.6);border:1px solid rgba(63,224,255,.35);
+    color:var(--cyan);font-family:'Share Tech Mono',monospace;font-size:12px;letter-spacing:.14em;text-transform:uppercase;
+    border-radius:2px;cursor:pointer;text-align:center;}
+  #qmenu button:active{background:rgba(63,224,255,.2);}
+  #qmenu button.on{background:rgba(120,255,180,.2);border-color:var(--green);color:var(--green);}
+  #qmenu button.danger{border-color:rgba(255,68,68,.5);color:var(--red);}
+  #qmenu .close{margin-top:20px;padding:14px 30px;border-color:rgba(255,255,255,.4);color:#fff;}
+  #flash{position:fixed;inset:0;background:#fff;z-index:30;opacity:0;pointer-events:none;transition:opacity .12s;}
+  #flash.on{opacity:.9;transition:none;}
 </style>
 </head>
 <body>
@@ -153,7 +178,10 @@
   <div class="row"><span class="k">OPTICAL</span><span class="v" id="t-fps">-- FPS</span></div>
   <div class="row"><span class="k">OBJECTS</span><span class="v" id="t-obj">0</span></div>
   <div class="row"><span class="k">BIOMETRIC</span><span class="v" id="t-face">0</span></div>
-  <div class="row"><span class="k">NEAREST</span><span class="v" id="t-near">--</span></div>
+  <div class="row"><span class="k">KNOWN</span><span class="v" id="t-known">0</span></div>
+  <div class="row"><span class="k">FACTS</span><span class="v" id="t-facts">0</span></div>
+  <div class="row"><span class="k">PROACTIVE</span><span class="v" id="t-proactive">OFF</span></div>
+  <div class="row"><span class="k">BATTERY</span><span class="v" id="t-batt">--</span></div>
   <div class="row"><span class="k">LINK</span><span class="v" id="t-link">--</span></div>
 </div>
 
@@ -173,13 +201,34 @@
 </form>
 
 <div id="dock">
-  <button class="btn sm" id="btnClear" title="Clear memory">⌫</button>
-  <button class="btn" id="btnMic" title="Talk">◉</button>
+  <button class="btn sm" id="btnClear" title="Clear chat">⌫</button>
+  <button class="btn sm enroll" id="btnEnroll" title="Enroll face">+</button>
+  <button class="btn sm proactive" id="btnProactive" title="Toggle proactive">⚠</button>
+  <button class="btn" id="btnMic" title="Tap = talk, Long-press = menu">◉</button>
 </div>
+
+<div id="toast"></div>
+
+<div id="qmenu">
+  <h2>QUICK ACTIONS</h2>
+  <div class="grid">
+    <button id="qaShot">📷 Screenshot</button>
+    <button id="qaOCR">🔤 Read Text</button>
+    <button id="qaRings" class="on">◯ Range Bands</button>
+    <button id="qaBeep" class="on">🔔 Sound Alerts</button>
+    <button id="qaJournal">📜 Export Journal</button>
+    <button id="qaStats">📊 Session Stats</button>
+    <button id="qaPrivacy" class="danger">🛑 Privacy Mode</button>
+    <button id="qaTime">🕐 Time & Date</button>
+  </div>
+  <button class="close" id="qaClose">Close</button>
+</div>
+
+<div id="flash"></div>
 
 <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@4.10.0/dist/tf.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@tensorflow-models/coco-ssd@2.2.3/dist/coco-ssd.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/@tensorflow-models/face-detection@1.0.2/dist/face-detection.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@vladmandic/face-api@1.7.12/dist/face-api.js"></script>
 
 <script>
 'use strict';
@@ -190,11 +239,26 @@ const CFG = {
   models: ['fast', 'default'],
   fovDeg: 62,
   inferMs: 350,
+  faceEveryN: 2,
   maxDraw: 14,
   fetchTimeoutMs: 20000,
   restartDelayMs: 600,
   wakeTimeoutMs: 9000,
-  recognitionStartDelayMs: 800
+  recognitionStartDelayMs: 800,
+  faceMatchThreshold: 0.55,
+  maxDescriptorsPerPerson: 5,
+  faceModelUrl: 'https://cdn.jsdelivr.net/npm/@vladmandic/face-api@1.7.12/model/',
+  proactiveWindowMs: 3000,
+  proactiveCooldownMs: 25000,
+  proactiveSpeak: true,
+  factExtractEveryN: 3,
+  maxFacts: 60,
+  sceneAnalysisEveryMs: 45000,
+  sceneAnalysisEnabled: false,
+  weatherRefreshMs: 900000,
+  weatherEnabled: true,
+  cameraHeightM: 1.5,
+  journalMax: 500
 };
 
 /* ═══════════════════════ DOM ═══════════════════════ */
@@ -205,17 +269,23 @@ const statusEl  = document.getElementById('status');
 const logEl     = document.getElementById('log');
 const btnMic    = document.getElementById('btnMic');
 const btnClear  = document.getElementById('btnClear');
+const btnEnroll = document.getElementById('btnEnroll');
+const btnProactive = document.getElementById('btnProactive');
 const targetEl  = document.getElementById('target');
 const setupEl   = document.getElementById('setup');
 const setupKey  = document.getElementById('setupKey');
 const setupMsg  = document.getElementById('setupMsg');
 const textInput = document.getElementById('textInput');
 const textForm  = document.getElementById('textForm');
+const toastEl   = document.getElementById('toast');
+const qmenuEl   = document.getElementById('qmenu');
+const flashEl   = document.getElementById('flash');
 
 /* ═══════════════════════ STATE ═══════════════════════ */
 let API_KEY = (localStorage.getItem('ev_key') || '').trim();
 let objectModel = null;
-let faceModel = null;
+let faceApiReady = false;
+let faceMatcher = null;
 
 let vw = 0, vh = 0;
 let cssW = 0, cssH = 0, dpr = 1;
@@ -225,16 +295,67 @@ let focalPx = 0;
 let detections = [], faces = [], tracks = [];
 let nextTrackId = 0, lockedTrackId = null, lockedId = null;
 let fps = 0, fpsAcc = 0, fpsN = 0;
+let frameCount = 0;
 
 let awake = false, wantListen = false, wakeTimer = null;
 let recognition = null, handledIndex = 0;
-
-let started = false;         // prevents double-init
+let started = false;
 let recognitionRunning = false;
+
+let labeledFaceDescriptors = [];
+let proactiveEnabled = (localStorage.getItem('ev_proactive') || '0') === '1';
+let detectionHistory = [];
+let lastEventTs = {};
+let longTermFacts = [];
+let userTurnCount = 0;
+let weatherCache = null;
+let weatherTs = 0;
+let lastSceneAnalysisTs = 0;
+
+let batteryInfo = null;
+let rangeBandsOn = (localStorage.getItem('ev_rings') || '1') === '1';
+let soundAlertsOn = (localStorage.getItem('ev_beep') || '1') === '1';
+let privacyMode = false;
+let journal = [];
+let stats = { frames: 0, objectsSeen: 0, facesSeen: 0, knownSeen: 0, events: 0, queries: 0, startTs: Date.now() };
+let countedTrackIds = new Set();
+let tesseractLoading = false;
+let tesseractLoaded = false;
 
 /* ═══════════════════════ REAL-WORLD HEIGHTS ═══════════════════════ */
 const REAL_H = {person:1.70,bicycle:1.00,car:1.50,motorcycle:1.10,airplane:5.00,bus:3.20,train:3.50,truck:3.00,boat:2.00,'traffic light':1.00,'fire hydrant':0.80,'stop sign':0.75,'parking meter':1.50,bench:0.90,bird:0.20,cat:0.30,dog:0.50,horse:1.60,sheep:0.90,cow:1.40,elephant:3.00,bear:1.50,zebra:1.40,giraffe:4.50,backpack:0.50,umbrella:0.90,handbag:0.30,tie:0.40,suitcase:0.70,frisbee:0.25,skis:1.70,snowboard:1.50,'sports ball':0.22,kite:0.50,'baseball bat':0.80,'baseball glove':0.30,skateboard:0.15,surfboard:1.80,'tennis racket':0.70,bottle:0.25,'wine glass':0.20,cup:0.12,fork:0.18,knife:0.20,spoon:0.18,bowl:0.10,banana:0.20,apple:0.08,sandwich:0.10,orange:0.08,broccoli:0.15,carrot:0.20,'hot dog':0.12,pizza:0.30,donut:0.10,cake:0.15,chair:0.90,couch:0.90,'potted plant':0.70,bed:0.60,'dining table':0.75,toilet:0.70,tv:0.60,laptop:0.25,mouse:0.04,remote:0.15,keyboard:0.03,'cell phone':0.15,microwave:0.35,oven:0.90,toaster:0.20,sink:0.30,refrigerator:1.80,book:0.25,clock:0.30,vase:0.40,scissors:0.20,'teddy bear':0.40,'hair drier':0.25,toothbrush:0.20};
 const HEAD_H = 0.23;
+
+const WMO = {0:'clear sky',1:'mainly clear',2:'partly cloudy',3:'overcast',45:'foggy',48:'rime fog',51:'light drizzle',53:'moderate drizzle',55:'dense drizzle',61:'slight rain',63:'moderate rain',65:'heavy rain',71:'slight snow',73:'moderate snow',75:'heavy snow',77:'snow grains',80:'rain showers',81:'moderate rain showers',82:'violent rain showers',85:'slight snow showers',86:'heavy snow showers',95:'thunderstorm',96:'thunderstorm with hail',99:'thunderstorm with heavy hail'};
+
+/* ═══════════════════════ AUDIO UNLOCK (FIX #1) ═══════════════════════ */
+let audioCtx = null;
+function unlockAudio(){
+  try {
+    if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    if (audioCtx.state === 'suspended') audioCtx.resume();
+  } catch(e){}
+}
+document.addEventListener('pointerdown', unlockAudio, { once: true });
+document.addEventListener('touchstart', unlockAudio, { once: true });
+
+function beep(freq, dur, vol){
+  if (!soundAlertsOn) return;
+  try {
+    if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    if (audioCtx.state === 'suspended') audioCtx.resume();
+    const osc = audioCtx.createOscillator();
+    const gain = audioCtx.createGain();
+    osc.frequency.value = freq || 880;
+    osc.type = 'sine';
+    osc.connect(gain);
+    gain.connect(audioCtx.destination);
+    gain.gain.setValueAtTime(vol || 0.05, audioCtx.currentTime);
+    gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + (dur || 80)/1000);
+    osc.start();
+    osc.stop(audioCtx.currentTime + (dur || 80)/1000);
+  } catch(e){}
+}
 
 /* ═══════════════════════ CANVAS SIZING ═══════════════════════ */
 function resizeAll(){
@@ -248,14 +369,12 @@ function resizeAll(){
   ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
   computeVideoTransform();
 }
-
 function computeVideoTransform(){
   if (!vw || !vh || !cssW || !cssH) return;
   scaleCss = Math.max(cssW / vw, cssH / vh);
   offX = (cssW - vw * scaleCss) / 2;
   offY = (cssH - vh * scaleCss) / 2;
 }
-
 function toScreenBox(box){
   const [x, y, w, h] = box;
   return [x*scaleCss + offX, y*scaleCss + offY, w*scaleCss, h*scaleCss];
@@ -263,26 +382,53 @@ function toScreenBox(box){
 function screenToVideo(clientX, clientY){
   return [(clientX - offX) / scaleCss, (clientY - offY) / scaleCss];
 }
-
 window.addEventListener('resize', resizeAll);
 window.addEventListener('orientationchange', ()=>{ setTimeout(resizeAll, 300); });
 resizeAll();
+
+/* ═══════════════════════ TOAST ═══════════════════════ */
+let toastTimer = null;
+function showToast(msg, isErr){
+  toastEl.textContent = msg;
+  toastEl.style.borderColor = isErr ? 'var(--red)' : 'var(--green)';
+  toastEl.style.color       = isErr ? 'var(--red)' : 'var(--green)';
+  toastEl.classList.add('on');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(()=>toastEl.classList.remove('on'), 2200);
+}
+
+/* ═══════════════════════ JOURNAL ═══════════════════════ */
+function addJournal(type, text){
+  journal.push({ ts: Date.now(), type, text: String(text).slice(0, 220) });
+  if (journal.length > CFG.journalMax) journal = journal.slice(-CFG.journalMax);
+}
+function exportJournal(){
+  if (!journal.length){ showToast('Journal empty'); return; }
+  const lines = journal.map(e =>
+    `[${new Date(e.ts).toLocaleString()}] ${e.type.toUpperCase()}: ${e.text}`
+  );
+  const txt = lines.join('\n');
+  const blob = new Blob([txt], { type: 'text/plain' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = `ev-journal-${new Date().toISOString().slice(0,19).replace(/[:T]/g,'-')}.txt`;
+  a.click();
+  setTimeout(()=>URL.revokeObjectURL(url), 1500);
+  showToast('Journal exported (' + journal.length + ' events)');
+}
 
 /* ═══════════════════════ SETUP SCREEN ═══════════════════════ */
 function showSetup(){
   setupEl.style.display = 'flex';
   setupKey.value = API_KEY || '';
 }
-
 document.getElementById('setupTest').addEventListener('click', async ()=>{
   const val = setupKey.value.trim();
   if (!val){ setupMsg.className='err'; setupMsg.textContent='Enter a key first'; return; }
   setupMsg.className = ''; setupMsg.textContent = 'Testing...';
   try {
-    const result = await callLLM(
-      [{ role:'user', content:'Reply with exactly: OK' }],
-      val
-    );
+    const result = await callLLM([{ role:'user', content:'Reply with exactly: OK' }], val);
     setupMsg.className = 'ok';
     setupMsg.textContent = `LINK OK — model: ${result.model} — reply: ${result.reply.slice(0,40)}`;
   } catch(e){
@@ -290,7 +436,6 @@ document.getElementById('setupTest').addEventListener('click', async ()=>{
     setupMsg.textContent = 'FAILED: ' + e.message.slice(0, 180);
   }
 });
-
 document.getElementById('setupSave').addEventListener('click', ()=>{
   const val = setupKey.value.trim();
   if (!val){ setupMsg.className='err'; setupMsg.textContent='Enter a key or type: unused'; return; }
@@ -300,16 +445,20 @@ document.getElementById('setupSave').addEventListener('click', ()=>{
   startEverything();
 });
 
-/* ═══════════════════════ START EVERYTHING (once) ═══════════════════════ */
+/* ═══════════════════════ START ═══════════════════════ */
 function startEverything(){
   if (started) return;
   started = true;
-
   setStatus('STARTING');
   startCamera();
   loadModels();
+  loadFacts();
+  updateProactiveUI();
+  updateMenuStates();
+  initBattery();
   setTimeout(initRecognition, CFG.recognitionStartDelayMs);
-
+  startWeatherLoop();
+  startSceneAnalysisLoop();
   if ('wakeLock' in navigator){
     navigator.wakeLock.request('screen').catch(()=>{});
   }
@@ -318,8 +467,7 @@ function startEverything(){
 /* ═══════════════════════ CAMERA ═══════════════════════ */
 function startCamera(){
   if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia){
-    setStatus('CAMERA UNSUPPORTED', 'err');
-    return;
+    setStatus('CAMERA UNSUPPORTED', 'err'); return;
   }
   navigator.mediaDevices.getUserMedia({
     video:{ facingMode:{ ideal:'environment' }, width:{ideal:1920}, height:{ideal:1080} },
@@ -331,29 +479,51 @@ function startCamera(){
       vh = video.videoHeight;
       computeVideoTransform();
       focalPx = (vw/2) / Math.tan((CFG.fovDeg * Math.PI/180)/2);
-      console.log('E.V. optics ready:', vw + 'x' + vh, 'f=' + focalPx.toFixed(0) + 'px');
+      console.log('Optics ready:', vw + 'x' + vh, 'f=' + focalPx.toFixed(0));
     };
   }).catch(e=>{
     setStatus('CAMERA DENIED', 'err');
     logLine('err', 'Camera: ' + e.message);
-    console.error('Camera:', e);
   });
 }
 
-/* ═══════════════════════ MODELS ═══════════════════════ */
+/* ═══════════════════════ BATTERY ═══════════════════════ */
+function initBattery(){
+  if (!navigator.getBattery) return;
+  navigator.getBattery().then(b => {
+    batteryInfo = b;
+    updateBatteryDisplay();
+    b.addEventListener('levelchange', updateBatteryDisplay);
+    b.addEventListener('chargingchange', updateBatteryDisplay);
+  }).catch(()=>{});
+}
+function updateBatteryDisplay(){
+  if (!batteryInfo) return;
+  const pct = Math.round(batteryInfo.level * 100);
+  const el = document.getElementById('t-batt');
+  el.textContent = pct + '%' + (batteryInfo.charging ? '⚡' : '');
+  el.className = 'v ' + (pct < 15 && !batteryInfo.charging ? 'err' : (pct < 30 ? 'warn' : ''));
+}
+
+/* ═══════════════════════ LOAD MODELS ═══════════════════════ */
 async function loadModels(){
   try {
-    faceModel = await faceDetection.createDetector(
-      faceDetection.SupportedModels.MediaPipeFaceDetector,
-      { runtime: 'tfjs', maxFaces: 6 }
-    );
-    console.log('Face model ready');
-  } catch(e){ console.warn('Face model failed:', e); }
+    objectModel = await cocoSsd.load({ base: 'lite_mobilenet_v2' });
+  } catch(e){ console.warn('Object model failed:', e); }
 
   try {
-    objectModel = await cocoSsd.load({ base: 'lite_mobilenet_v2' });
-    console.log('Object model ready');
-  } catch(e){ console.warn('Object model failed:', e); }
+    await Promise.all([
+      faceapi.nets.tinyFaceDetector.loadFromUri(CFG.faceModelUrl),
+      faceapi.nets.faceLandmark68Net.loadFromUri(CFG.faceModelUrl),
+      faceapi.nets.faceRecognitionNet.loadFromUri(CFG.faceModelUrl)
+    ]);
+    faceApiReady = true;
+    loadKnownFaces();
+    rebuildFaceMatcher();
+  } catch(e){
+    console.warn('Face models failed:', e);
+    faceApiReady = false;
+  }
 
   setStatus('SCANNING');
   loop();
@@ -362,55 +532,77 @@ async function loadModels(){
 /* ═══════════════════════ MAIN LOOP ═══════════════════════ */
 async function loop(){
   const t0 = performance.now();
-
-  if (video.readyState === 4 && objectModel) {
-    await runInference();
+  frameCount++;
+  if (privacyMode){
+    setTimeout(loop, 500);
+    return;
   }
-
+  if (video.readyState === 4 && objectModel) await runInference();
   draw();
-
   const dt = performance.now() - t0;
-  fpsAcc += 1000 / Math.max(dt, 1);
-  fpsN++;
+  fpsAcc += 1000 / Math.max(dt, 1); fpsN++;
   if (fpsN >= 8){ fps = Math.round(fpsAcc / fpsN); fpsAcc = 0; fpsN = 0; }
-
   setTimeout(loop, CFG.inferMs);
 }
 
 async function runInference(){
+  stats.frames++;
   try {
     const preds = await objectModel.detect(video, CFG.maxDraw);
     detections = preds
       .filter(p => p.score > 0.45)
       .map((p, i)=>({
-        id: 'o' + i,
-        cls: p.class,
-        score: p.score,
-        box: p.bbox,
+        id: 'o' + i, cls: p.class, score: p.score, box: p.bbox,
         range: estimateRange(p.class, p.bbox[3])
       }))
       .sort((a, b)=>(a.range || 99) - (b.range || 99));
-  } catch(e){ /* skip frame */ }
+  } catch(e){}
 
-  if (faceModel) {
+  if (faceApiReady && frameCount % CFG.faceEveryN === 0) {
     try {
-      const fs = await faceModel.estimateFaces(video);
-      faces = fs.map(f=>{
-        const b = f.box;
-        const w = (b.width !== undefined) ? b.width : (b.xMax - b.xMin);
-        const h = (b.height !== undefined) ? b.height : (b.yMax - b.yMin);
+      const results = await faceapi
+        .detectAllFaces(video, new faceapi.TinyFaceDetectorOptions({ inputSize: 320, scoreThreshold: 0.5 }))
+        .withFaceLandmarks()
+        .withFaceDescriptors();
+
+      faces = results.map(fd=>{
+        const b = fd.detection.box;
+        let label = 'UNKNOWN', dist = null;
+        if (faceMatcher){
+          try {
+            const match = faceMatcher.findBestMatch(fd.descriptor);
+            if (match && match.label && match.label !== 'unknown'){
+              label = match.label; dist = match.distance;
+              stats.knownSeen++;
+            }
+          } catch(e){}
+        }
         return {
-          box: [b.xMin, b.yMin, w, h],
-          range: estimateRange(null, h, HEAD_H)
+          box: [b.x, b.y, b.width, b.height],
+          range: estimateRange(null, b.height, HEAD_H),
+          label, distance: dist
         };
       });
-    } catch(e){ /* skip */ }
+      stats.facesSeen += faces.length;
+    } catch(e){}
   }
 
   updateTracks(detections);
+
+  /* FIX #3 — count only new tracks to prevent inflated stats */
+  detections.forEach(d => {
+    if (d.trackId !== undefined && !countedTrackIds.has(d.trackId)){
+      countedTrackIds.add(d.trackId);
+      stats.objectsSeen++;
+    }
+  });
+  if (countedTrackIds.size > 5000) countedTrackIds.clear();
+
+  recordDetectionSnapshot();
+  checkProactiveEvents();
 }
 
-/* ═══════════════════════ RANGE ESTIMATION ═══════════════════════ */
+/* ═══════════════════════ RANGE ═══════════════════════ */
 function estimateRange(cls, pxHeight, forcedReal){
   if (!pxHeight || pxHeight < 4 || !focalPx) return null;
   const real = forcedReal ?? REAL_H[cls] ?? 0.5;
@@ -426,27 +618,23 @@ function distanceBetween(a, b){
   if (a.range == null || b.range == null) return null;
   const ax = lateralOffset(a.box[0] + a.box[2]/2, a.range);
   const bx = lateralOffset(b.box[0] + b.box[2]/2, b.range);
-  const dx = ax - bx;
-  const dz = a.range - b.range;
+  const dx = ax - bx, dz = a.range - b.range;
   const d = Math.sqrt(dx*dx + dz*dz);
   return isFinite(d) ? d : null;
 }
 
 /* ═══════════════════════ TRACKING ═══════════════════════ */
 function iou(a, b){
-  const [ax, ay, aw, ah] = a;
-  const [bx, by, bw, bh] = b;
+  const [ax, ay, aw, ah] = a, [bx, by, bw, bh] = b;
   const x1 = Math.max(ax, bx), y1 = Math.max(ay, by);
   const x2 = Math.min(ax + aw, bx + bw), y2 = Math.min(ay + ah, by + bh);
   const inter = Math.max(0, x2 - x1) * Math.max(0, y2 - y1);
   const uni = aw*ah + bw*bh - inter;
   return uni > 0 ? inter / uni : 0;
 }
-
 function updateTracks(newDets){
   const MATCH = 0.3, MAX_LOST = 5;
   tracks.forEach(t => t.matched = false);
-
   newDets.forEach(det=>{
     let best = null, bestI = MATCH;
     tracks.forEach(t=>{
@@ -454,14 +642,9 @@ function updateTracks(newDets){
       const s = iou(t.box, det.box);
       if (s > bestI){ bestI = s; best = t; }
     });
-
     if (best){
-      best.box = det.box;
-      best.score = det.score;
-      best.range = det.range;
-      best.lostFrames = 0;
-      best.matched = true;
-      det.trackId = best.id;
+      best.box = det.box; best.score = det.score; best.range = det.range;
+      best.lostFrames = 0; best.matched = true; det.trackId = best.id;
     } else {
       const id = nextTrackId++;
       tracks.push({ id, box: det.box, cls: det.cls, score: det.score,
@@ -469,84 +652,534 @@ function updateTracks(newDets){
       det.trackId = id;
     }
   });
-
   tracks.forEach(t=>{ if (!t.matched) t.lostFrames++; });
   tracks = tracks.filter(t => t.lostFrames <= MAX_LOST);
+  if (lockedTrackId !== null && !tracks.some(t => t.id === lockedTrackId)) lockedTrackId = null;
+  lockedId = lockedTrackId !== null ? (detections.find(d => d.trackId === lockedTrackId)?.id || null) : null;
+}
 
-  if (lockedTrackId !== null && !tracks.some(t => t.id === lockedTrackId)) {
-    lockedTrackId = null;
-  }
-  if (lockedTrackId !== null) {
-    const hit = detections.find(d => d.trackId === lockedTrackId);
-    lockedId = hit ? hit.id : null;
-  } else {
-    lockedId = null;
+/* ═══════════════════════ FACE STORAGE ═══════════════════════ */
+const KNOWN_FACES_KEY = 'ev_known_faces';
+function loadKnownFaces(){
+  try {
+    const saved = localStorage.getItem(KNOWN_FACES_KEY);
+    if (!saved){ labeledFaceDescriptors = []; return; }
+    const parsed = JSON.parse(saved);
+    labeledFaceDescriptors = parsed.map(item => ({
+      label: String(item.label),
+      descriptors: item.descriptors.map(d => new Float32Array(d))
+    })).filter(p => p.label && p.descriptors.length > 0);
+  } catch(e){ labeledFaceDescriptors = []; }
+}
+function saveKnownFaces(){
+  try {
+    localStorage.setItem(KNOWN_FACES_KEY, JSON.stringify(
+      labeledFaceDescriptors.map(item => ({
+        label: item.label,
+        descriptors: item.descriptors.map(d => Array.from(d))
+      }))
+    ));
+  } catch(e){ showToast('Storage error', true); }
+}
+function rebuildFaceMatcher(){
+  if (!faceApiReady || !labeledFaceDescriptors.length){ faceMatcher = null; return; }
+  try {
+    faceMatcher = new faceapi.FaceMatcher(
+      labeledFaceDescriptors.map(item => new faceapi.LabeledFaceDescriptors(item.label, item.descriptors)),
+      CFG.faceMatchThreshold
+    );
+  } catch(e){ faceMatcher = null; }
+}
+async function enrollCurrentFace(){
+  if (!faceApiReady){ showToast('Face model not ready', true); return; }
+  if (video.readyState !== 4 || !vw){ showToast('Camera not ready', true); return; }
+  const name = prompt('Enter a name for this face:');
+  if (!name || !name.trim()){ showToast('Cancelled'); return; }
+  const cleanName = name.trim().slice(0, 24);
+  setStatus('SCANNING FACE', 'hot');
+  showToast('Hold still...');
+  try {
+    const detection = await faceapi
+      .detectSingleFace(video, new faceapi.TinyFaceDetectorOptions({ inputSize: 320, scoreThreshold: 0.5 }))
+      .withFaceLandmarks().withFaceDescriptor();
+    if (!detection){ showToast('No face detected', true); setStatus('SCANNING'); return; }
+    let person = labeledFaceDescriptors.find(p => p.label === cleanName);
+    if (!person){ person = { label: cleanName, descriptors: [] }; labeledFaceDescriptors.push(person); }
+    person.descriptors.push(detection.descriptor);
+    if (person.descriptors.length > CFG.maxDescriptorsPerPerson){
+      person.descriptors = person.descriptors.slice(-CFG.maxDescriptorsPerPerson);
+    }
+    saveKnownFaces(); rebuildFaceMatcher();
+    showToast('Enrolled: ' + cleanName);
+    logLine('a', `Face saved for ${cleanName}.`);
+    addJournal('face', 'Enrolled ' + cleanName);
+    beep(1200, 120);
+    speak(`Profile created for ${cleanName}.`);
+    setStatus('SCANNING');
+  } catch(e){
+    showToast('Enroll failed', true);
+    logLine('err', 'Enroll: ' + e.message);
+    setStatus('SCANNING');
   }
 }
+function clearAllFaces(){
+  if (!labeledFaceDescriptors.length){ showToast('No profiles to clear'); return; }
+  if (!confirm(`Delete all ${labeledFaceDescriptors.length} face profile(s)?`)) return;
+  labeledFaceDescriptors = [];
+  localStorage.removeItem(KNOWN_FACES_KEY);
+  rebuildFaceMatcher();
+  showToast('All profiles cleared');
+  logLine('a', 'All face profiles deleted.');
+  addJournal('face', 'Cleared all profiles');
+}
+let enrollPressTimer = null, enrollLongFired = false;
+btnEnroll.addEventListener('pointerdown', ()=>{
+  enrollLongFired = false;
+  enrollPressTimer = setTimeout(()=>{ enrollLongFired = true; clearAllFaces(); }, 600);
+});
+btnEnroll.addEventListener('pointerup', (e)=>{
+  clearTimeout(enrollPressTimer);
+  if (!enrollLongFired){ e.preventDefault(); enrollCurrentFace(); }
+});
+btnEnroll.addEventListener('pointercancel', ()=>clearTimeout(enrollPressTimer));
+
+/* ═══════════════════════ PROACTIVE ═══════════════════════ */
+function updateProactiveUI(){
+  btnProactive.classList.toggle('on', proactiveEnabled);
+  document.getElementById('t-proactive').textContent = proactiveEnabled ? 'ON' : 'OFF';
+  document.getElementById('t-proactive').className = 'v ' + (proactiveEnabled ? 'ok' : 'warn');
+}
+btnProactive.addEventListener('click', ()=>{
+  proactiveEnabled = !proactiveEnabled;
+  localStorage.setItem('ev_proactive', proactiveEnabled ? '1' : '0');
+  updateProactiveUI();
+  showToast('Proactive ' + (proactiveEnabled ? 'enabled' : 'disabled'));
+});
+function recordDetectionSnapshot(){
+  const counts = {};
+  detections.forEach(d=>{ counts[d.cls] = (counts[d.cls] || 0) + 1; });
+  const known = faces.filter(f => f.label !== 'UNKNOWN').map(f => f.label);
+  const unknown = faces.filter(f => f.label === 'UNKNOWN').length;
+  detectionHistory.push({
+    ts: Date.now(), counts, known, unknown,
+    total: detections.length, faceTotal: faces.length
+  });
+  const cutoff = Date.now() - CFG.proactiveWindowMs;
+  detectionHistory = detectionHistory.filter(h => h.ts >= cutoff);
+}
+function canFireEvent(type){
+  const now = Date.now();
+  const last = lastEventTs[type] || 0;
+  if (now - last < CFG.proactiveCooldownMs) return false;
+  lastEventTs[type] = now;
+  return true;
+}
+function fireEvent(type, message){
+  if (!canFireEvent(type)) return;
+  logLine('evt', message);
+  addJournal('event', message);
+  stats.events++;
+  beep(type === 'unknown_face' ? 660 : 880, 100);
+  if (CFG.proactiveSpeak) speak(message);
+}
+function checkProactiveEvents(){
+  if (!proactiveEnabled) return;
+  if (detectionHistory.length < 2) return;
+  const now = detectionHistory[detectionHistory.length - 1];
+  const agoTs = Date.now() - 1500;
+  const ago = detectionHistory.find(h => h.ts >= agoTs) || detectionHistory[0];
+
+  const personsNow = now.counts.person || 0;
+  const personsAgo = ago.counts.person || 0;
+  if (personsNow > 0 && personsAgo === 0){
+    fireEvent('person_in', personsNow === 1
+      ? 'Alert: a person has entered the visual field.'
+      : `Alert: ${personsNow} people have entered the visual field.`);
+  }
+  if (personsNow === 0 && personsAgo > 0){
+    fireEvent('person_out', 'Alert: the visual field is now clear of people.');
+  }
+  const unknownNow = now.unknown;
+  const unknownAgo = ago.unknown;
+  if (unknownNow > 0 && unknownAgo === 0){
+    fireEvent('unknown_face', 'Alert: an unidentified face is in view.');
+  }
+  const newKnown = now.known.filter(k => !ago.known.includes(k));
+  if (newKnown.length > 0){
+    fireEvent('known_face', `Notice: ${newKnown.join(', ')} is now in view.`);
+  }
+  const carsNow = (now.counts.car || 0) + (now.counts.truck || 0) + (now.counts.motorcycle || 0) + (now.counts.bus || 0);
+  const carsAgo = (ago.counts.car || 0) + (ago.counts.truck || 0) + (ago.counts.motorcycle || 0) + (ago.counts.bus || 0);
+  if (carsNow > 0 && carsAgo === 0){
+    fireEvent('vehicle_in', 'Notice: vehicle detected in the visual field.');
+  }
+}
+
+/* ═══════════════════════ LONG-TERM MEMORY ═══════════════════════ */
+const FACTS_KEY = 'ev_facts';
+function loadFacts(){
+  try {
+    longTermFacts = JSON.parse(localStorage.getItem(FACTS_KEY) || '[]');
+    if (!Array.isArray(longTermFacts)) longTermFacts = [];
+  } catch(e){ longTermFacts = []; }
+  document.getElementById('t-facts').textContent = longTermFacts.length;
+}
+function saveFacts(){
+  try {
+    if (longTermFacts.length > CFG.maxFacts) longTermFacts = longTermFacts.slice(-CFG.maxFacts);
+    localStorage.setItem(FACTS_KEY, JSON.stringify(longTermFacts));
+    document.getElementById('t-facts').textContent = longTermFacts.length;
+  } catch(e){}
+}
+function tokenize(str){
+  return String(str).toLowerCase()
+    .replace(/[^a-z0-9\s]/g, ' ').split(/\s+/)
+    .filter(w => w.length > 2);
+}
+function addFact(text){
+  const clean = String(text).trim().slice(0, 160);
+  if (!clean || clean.length < 5) return;
+  if (longTermFacts.some(f => f.text.toLowerCase() === clean.toLowerCase())) return;
+  const keywords = tokenize(clean).slice(0, 12);
+  longTermFacts.push({ text: clean, keywords, ts: Date.now() });
+  saveFacts();
+}
+function getRelevantFacts(prompt){
+  if (!longTermFacts.length) return '';
+  const promptTokens = tokenize(prompt);
+  if (!promptTokens.length) return '';
+  const scored = longTermFacts.map(f => {
+    let score = 0;
+    f.keywords.forEach(k => { if (promptTokens.includes(k)) score++; });
+    return { fact: f.text, score };
+  }).filter(x => x.score > 0).sort((a, b) => b.score - a.score).slice(0, 5);
+  if (!scored.length) return '';
+  return scored.map(s => '- ' + s.fact).join('\n');
+}
+async function extractFactsFromTurn(userMsg, aiReply){
+  userTurnCount++;
+  if (userTurnCount % CFG.factExtractEveryN !== 0) return;
+  const extractionPrompt = `Extract any permanent or long-term facts about the user or their world from this single exchange. Only include facts likely to still be true days from now (name, preferences, location, relationships, recurring routines). Ignore one-off questions, greetings, and general knowledge. Return ONLY a JSON array of short strings, no other text. If nothing to remember, return [].\n\nUSER: ${userMsg}\nASSISTANT: ${aiReply}`;
+  try {
+    const { reply } = await callLLM([{ role:'user', content: extractionPrompt }]);
+    const cleaned = reply.replace(/```json|```/g, '').trim();
+    let arr = null;
+    try { arr = JSON.parse(cleaned); } catch(e){
+      const m = cleaned.match(/\[[\s\S]*\]/);
+      if (m) try { arr = JSON.parse(m[0]); } catch(_){}
+    }
+    if (Array.isArray(arr)){
+      let added = 0;
+      arr.forEach(f => {
+        if (typeof f === 'string' && f.trim().length > 4){
+          const before = longTermFacts.length;
+          addFact(f);
+          if (longTermFacts.length > before) added++;
+        }
+      });
+      if (added > 0) console.log('Extracted', added, 'facts. Total:', longTermFacts.length);
+    }
+  } catch(e){}
+}
+function clearAllFacts(){
+  longTermFacts = [];
+  localStorage.removeItem(FACTS_KEY);
+  document.getElementById('t-facts').textContent = '0';
+  showToast('Facts cleared');
+  logLine('a', 'All long-term memory deleted.');
+}
+
+/* ═══════════════════════ WEATHER ═══════════════════════ */
+function startWeatherLoop(){
+  if (!CFG.weatherEnabled) return;
+  refreshWeather();
+  setInterval(refreshWeather, CFG.weatherRefreshMs);
+}
+async function refreshWeather(){
+  if (!navigator.geolocation) return;
+  try {
+    const pos = await new Promise((res, rej)=>{
+      navigator.geolocation.getCurrentPosition(res, rej, { timeout: 8000, maximumAge: 600000 });
+    });
+    const { latitude, longitude } = pos.coords;
+    const url = `https://api.open-meteo.com/v1/forecast?latitude=${latitude}&longitude=${longitude}&current=temperature_2m,weather_code,wind_speed_10m,relative_humidity_2m`;
+    const res = await fetch(url);
+    if (!res.ok) return;
+    const data = await res.json();
+    const c = data.current;
+    if (!c) return;
+    weatherCache = {
+      temp: c.temperature_2m, code: c.weather_code,
+      wind: c.wind_speed_10m, humidity: c.relative_humidity_2m,
+      desc: WMO[c.weather_code] || 'unknown',
+      lat: latitude, lon: longitude
+    };
+    weatherTs = Date.now();
+  } catch(e){}
+}
+function weatherSummary(){
+  if (!weatherCache) return null;
+  return `${weatherCache.temp}°C, ${weatherCache.desc}, wind ${weatherCache.wind} km/h, humidity ${weatherCache.humidity}%`;
+}
+
+/* ═══════════════════════ SCENE ANALYSIS ═══════════════════════ */
+function startSceneAnalysisLoop(){
+  if (!CFG.sceneAnalysisEnabled) return;
+  setInterval(runSceneAnalysis, CFG.sceneAnalysisEveryMs);
+}
+async function runSceneAnalysis(){
+  if (!CFG.sceneAnalysisEnabled || !vw) return;
+  if (Date.now() - lastSceneAnalysisTs < CFG.sceneAnalysisEveryMs - 1000) return;
+  lastSceneAnalysisTs = Date.now();
+  try {
+    const fc = document.createElement('canvas');
+    fc.width = Math.min(vw, 960);
+    fc.height = Math.round(fc.width * vh / vw);
+    fc.getContext('2d').drawImage(video, 0, 0, fc.width, fc.height);
+    const dataUrl = fc.toDataURL('image/jpeg', 0.55);
+    const messages = [
+      { role: 'system', content: 'You are E.V. Describe the scene in one short sentence. Focus on noteworthy activity, unusual objects, or changes. Skip the obvious. If nothing notable, say "Situation nominal."' },
+      { role: 'user', content: [
+        { type: 'text', text: 'Briefly describe what you see.' },
+        { type: 'image_url', image_url: { url: dataUrl, detail: 'low' } }
+      ]}
+    ];
+    const { reply } = await callLLM(messages);
+    logLine('evt', 'Scene: ' + reply);
+    addJournal('scene', reply);
+  } catch(e){}
+}
+
+/* ═══════════════════════ OCR — FIX #4 ═══════════════════════ */
+async function loadTesseract(){
+  if (tesseractLoaded) return true;
+  if (tesseractLoading) return false;
+  tesseractLoading = true;
+  showToast('Loading OCR engine...');
+  try {
+    await new Promise((res, rej) => {
+      const s = document.createElement('script');
+      s.src = 'https://cdn.jsdelivr.net/npm/tesseract.js@5.0.4/dist/tesseract.min.js';
+      s.onload = res; s.onerror = rej;
+      document.head.appendChild(s);
+    });
+    tesseractLoaded = true;
+    tesseractLoading = false;
+    return true;
+  } catch(e){
+    tesseractLoading = false;
+    showToast('OCR failed to load', true);
+    return false;
+  }
+}
+async function readTextFromCamera(){
+  if (!vw){ showToast('Camera not ready', true); return; }
+  const ok = await loadTesseract();
+  if (!ok) return;
+  setStatus('READING TEXT', 'hot');
+  showToast('Scanning text...');
+  try {
+    const fc = document.createElement('canvas');
+    fc.width = vw;
+    fc.height = vh;
+    fc.getContext('2d').drawImage(video, 0, 0, vw, vh);
+    const dataUrl = fc.toDataURL('image/jpeg', 0.9);
+
+    const result = await Tesseract.recognize(dataUrl, 'eng', {
+      workerPath: 'https://cdn.jsdelivr.net/npm/tesseract.js@5.0.4/dist/worker.min.js',
+      corePath: 'https://cdn.jsdelivr.net/npm/tesseract.js-core@5.0.0',
+      langPath: 'https://tessdata.projectnaptha.com/4.0.0'
+    });
+
+    const text = (result.data.text || '').trim();
+    if (!text){
+      logLine('a', 'No text detected in view.');
+      speak('No text detected.');
+    } else {
+      const clean = text.replace(/\s+/g, ' ').slice(0, 500);
+      logLine('a', 'Text: ' + clean);
+      addJournal('ocr', clean);
+      speak(clean.slice(0, 400));
+    }
+    setStatus('SCANNING');
+  } catch(e){
+    logLine('err', 'OCR failed: ' + e.message);
+    setStatus('SCANNING');
+  }
+}
+
+/* ═══════════════════════ SCREENSHOT — FIX #2 ═══════════════════════ */
+function takeScreenshot(){
+  try {
+    flashEl.classList.add('on');
+    setTimeout(()=>flashEl.classList.remove('on'), 130);
+    setTimeout(()=>{
+      const comp = document.createElement('canvas');
+      comp.width = vw || canvas.width;
+      comp.height = vh || canvas.height;
+      const cctx = comp.getContext('2d');
+
+      if (video.readyState === 4 && !privacyMode){
+        cctx.drawImage(video, 0, 0, comp.width, comp.height);
+      } else {
+        cctx.fillStyle = '#000';
+        cctx.fillRect(0, 0, comp.width, comp.height);
+      }
+
+      cctx.drawImage(canvas, 0, 0, comp.width, comp.height);
+
+      const a = document.createElement('a');
+      a.download = `ev-${new Date().toISOString().slice(0,19).replace(/[:T]/g,'-')}.png`;
+      a.href = comp.toDataURL('image/png');
+      a.click();
+      showToast('Screenshot saved');
+      addJournal('shot', 'Screenshot captured');
+    }, 100);
+  } catch(e){ showToast('Screenshot failed', true); }
+}
+
+/* ═══════════════════════ PRIVACY MODE ═══════════════════════ */
+function togglePrivacy(){
+  privacyMode = !privacyMode;
+  document.body.classList.toggle('privacy', privacyMode);
+  if (privacyMode){
+    wantListen = false;
+    if (recognition){ try { recognition.stop(); } catch(e){} }
+    if (video.srcObject){ video.srcObject.getTracks().forEach(t => t.stop()); video.srcObject = null; }
+    detections = []; faces = [];
+    setStatus('PRIVACY MODE', 'err');
+    showToast('Privacy mode ON');
+    addJournal('privacy', 'Privacy mode enabled');
+  } else {
+    startCamera();
+    wantListen = true;
+    recognitionRunning = false;
+    initRecognition();
+    setStatus('SCANNING');
+    showToast('Privacy mode OFF');
+    addJournal('privacy', 'Privacy mode disabled');
+  }
+  updateMenuStates();
+}
+
+/* ═══════════════════════ QUICK MENU ═══════════════════════ */
+function updateMenuStates(){
+  document.getElementById('qaRings').classList.toggle('on', rangeBandsOn);
+  document.getElementById('qaBeep').classList.toggle('on', soundAlertsOn);
+  document.getElementById('qaPrivacy').textContent = privacyMode ? '🟢 Exit Privacy' : '🛑 Privacy Mode';
+}
+function openQmenu(){ qmenuEl.classList.add('on'); updateMenuStates(); }
+function closeQmenu(){ qmenuEl.classList.remove('on'); }
+
+document.getElementById('qaShot').addEventListener('click', ()=>{ closeQmenu(); takeScreenshot(); });
+document.getElementById('qaOCR').addEventListener('click', ()=>{ closeQmenu(); readTextFromCamera(); });
+document.getElementById('qaRings').addEventListener('click', ()=>{
+  rangeBandsOn = !rangeBandsOn;
+  localStorage.setItem('ev_rings', rangeBandsOn ? '1' : '0');
+  updateMenuStates();
+});
+document.getElementById('qaBeep').addEventListener('click', ()=>{
+  soundAlertsOn = !soundAlertsOn;
+  localStorage.setItem('ev_beep', soundAlertsOn ? '1' : '0');
+  updateMenuStates();
+  if (soundAlertsOn) beep(880, 80);
+});
+document.getElementById('qaJournal').addEventListener('click', ()=>{ closeQmenu(); exportJournal(); });
+document.getElementById('qaStats').addEventListener('click', ()=>{
+  closeQmenu();
+  const mins = Math.round((Date.now() - stats.startTs) / 60000);
+  const summary = `Session: ${mins} min · ${stats.frames} frames · ${stats.objectsSeen} objects · ${stats.facesSeen} faces · ${stats.knownSeen} known hits · ${stats.events} events · ${stats.queries} queries`;
+  logLine('a', summary);
+  addJournal('stats', summary);
+  showToast('Stats in log');
+  speak(`Session running for ${mins} minutes. ${stats.events} events logged.`);
+});
+document.getElementById('qaPrivacy').addEventListener('click', ()=>{ closeQmenu(); togglePrivacy(); });
+document.getElementById('qaTime').addEventListener('click', ()=>{
+  closeQmenu();
+  const d = new Date();
+  const msg = `Current time: ${d.toLocaleTimeString()}. Date: ${d.toLocaleDateString(undefined, { weekday:'long', year:'numeric', month:'long', day:'numeric' })}.`;
+  logLine('a', msg);
+  speak(msg);
+});
+document.getElementById('qaClose').addEventListener('click', closeQmenu);
 
 /* ═══════════════════════ DRAW ═══════════════════════ */
 function draw(){
   ctx.clearRect(0, 0, cssW, cssH);
-  drawObjects();
-  drawFaces();
-  drawTargetLines();
+  if (!privacyMode){
+    if (rangeBandsOn) drawRangeBands();
+    drawObjects();
+    drawFaces();
+    drawTargetLines();
+  }
   updatePanels();
 }
 
-function bracket(sx, sy, sw, sh, color, len, lw){
-  ctx.strokeStyle = color;
-  ctx.lineWidth = lw;
-  ctx.beginPath();
-  ctx.moveTo(sx, sy + len);            ctx.lineTo(sx, sy);            ctx.lineTo(sx + len, sy);
-  ctx.moveTo(sx + sw - len, sy);       ctx.lineTo(sx + sw, sy);       ctx.lineTo(sx + sw, sy + len);
-  ctx.moveTo(sx + sw, sy + sh - len);  ctx.lineTo(sx + sw, sy + sh);  ctx.lineTo(sx + sw - len, sy + sh);
-  ctx.moveTo(sx + len, sy + sh);       ctx.lineTo(sx, sy + sh);       ctx.lineTo(sx, sy + sh - len);
-  ctx.stroke();
+function drawRangeBands(){
+  if (!focalPx || !vh) return;
+  const camH = CFG.cameraHeightM;
+  const horizonVideoY = vh / 2;
+  const CYAN = 'rgba(63,224,255,.28)';
+
+  [5, 10, 20, 40].forEach(dist=>{
+    const yOffset = (focalPx * camH) / dist;
+    const yVideo = horizonVideoY + yOffset;
+    if (yVideo < 0 || yVideo > vh) return;
+    const sy = yVideo * scaleCss + offY;
+    if (sy < 0 || sy > cssH) return;
+
+    ctx.strokeStyle = CYAN;
+    ctx.lineWidth = 1;
+    ctx.setLineDash([4, 6]);
+    ctx.beginPath();
+    ctx.moveTo(0, sy);
+    ctx.lineTo(cssW, sy);
+    ctx.stroke();
+    ctx.setLineDash([]);
+
+    ctx.fillStyle = CYAN;
+    ctx.font = '500 11px "Share Tech Mono", monospace';
+    ctx.fillText(dist + 'm', 8, sy - 4);
+  });
 }
 
+function bracket(sx, sy, sw, sh, color, len, lw){
+  ctx.strokeStyle = color; ctx.lineWidth = lw; ctx.beginPath();
+  ctx.moveTo(sx, sy + len);           ctx.lineTo(sx, sy);           ctx.lineTo(sx + len, sy);
+  ctx.moveTo(sx + sw - len, sy);      ctx.lineTo(sx + sw, sy);      ctx.lineTo(sx + sw, sy + len);
+  ctx.moveTo(sx + sw, sy + sh - len); ctx.lineTo(sx + sw, sy + sh); ctx.lineTo(sx + sw - len, sy + sh);
+  ctx.moveTo(sx + len, sy + sh);      ctx.lineTo(sx, sy + sh);      ctx.lineTo(sx, sy + sh - len);
+  ctx.stroke();
+}
 function tag(text, sx, sy, color){
   ctx.font = '500 15px "Share Tech Mono", monospace';
   const tw = ctx.measureText(text).width + 14;
   const tagY = Math.max(22, sy);
   ctx.fillStyle = 'rgba(0,12,20,.82)';
   ctx.fillRect(sx, tagY - 20, tw, 22);
-  ctx.fillStyle = color;
-  ctx.fillRect(sx, tagY - 20, 3, 22);
-  ctx.fillStyle = color;
-  ctx.textBaseline = 'middle';
+  ctx.fillStyle = color; ctx.fillRect(sx, tagY - 20, 3, 22);
+  ctx.fillStyle = color; ctx.textBaseline = 'middle';
   ctx.fillText(text, sx + 9, tagY - 9);
   ctx.textBaseline = 'alphabetic';
 }
-
 function drawObjects(){
-  const CYAN = 'rgba(63,224,255,.95)';
-  const AMBER = 'rgba(255,176,32,1)';
-
+  const CYAN = 'rgba(63,224,255,.95)', AMBER = 'rgba(255,176,32,1)';
   detections.forEach(d=>{
     const [sx, sy, sw, sh] = toScreenBox(d.box);
     const locked = d.id === lockedId;
     const color = locked ? AMBER : CYAN;
     const len = Math.max(14, Math.min(28, sw * 0.18));
     bracket(sx, sy, sw, sh, color, len, locked ? 3 : 2);
-
     if (locked){
       const t = (Date.now() % 1200) / 1200;
-      ctx.strokeStyle = 'rgba(255,176,32,.5)';
-      ctx.lineWidth = 1;
-      ctx.beginPath();
-      ctx.moveTo(sx, sy + sh * t);
-      ctx.lineTo(sx + sw, sy + sh * t);
-      ctx.stroke();
+      ctx.strokeStyle = 'rgba(255,176,32,.5)'; ctx.lineWidth = 1;
+      ctx.beginPath(); ctx.moveTo(sx, sy + sh*t); ctx.lineTo(sx + sw, sy + sh*t); ctx.stroke();
     }
-
-    const label = `${d.cls.toUpperCase()}  ${(d.score*100).toFixed(0)}%` +
-                  (d.range ? `  ${d.range.toFixed(1)}m` : '');
+    const label = `${d.cls.toUpperCase()}  ${(d.score*100).toFixed(0)}%` + (d.range ? `  ${d.range.toFixed(1)}m` : '');
     tag(label, sx, sy - 6, color);
-
     const cx = sx + sw/2, cy = sy + sh/2;
-    ctx.strokeStyle = color;
-    ctx.lineWidth = 1;
-    ctx.beginPath();
+    ctx.strokeStyle = color; ctx.lineWidth = 1; ctx.beginPath();
     ctx.moveTo(cx - 7, cy); ctx.lineTo(cx - 2, cy);
     ctx.moveTo(cx + 2, cy); ctx.lineTo(cx + 7, cy);
     ctx.moveTo(cx, cy - 7); ctx.lineTo(cx, cy - 2);
@@ -554,45 +1187,40 @@ function drawObjects(){
     ctx.stroke();
   });
 }
-
 function drawFaces(){
-  const GREEN = 'rgba(120,255,180,.95)';
+  const KNOWN = 'rgba(120,255,180,.95)', UNKNOWN = 'rgba(255,255,255,.85)';
   faces.forEach(f=>{
     const [sx, sy, sw, sh] = toScreenBox(f.box);
-    bracket(sx, sy, sw, sh, GREEN, 12, 2);
-    ctx.fillStyle = GREEN;
+    const isKnown = f.label && f.label !== 'UNKNOWN';
+    const color = isKnown ? KNOWN : UNKNOWN;
+    bracket(sx, sy, sw, sh, color, 12, 2);
+    ctx.fillStyle = color;
     [[sx, sy], [sx + sw, sy], [sx, sy + sh], [sx + sw, sy + sh]].forEach(([px, py])=>{
       ctx.fillRect(px - 2, py - 2, 4, 4);
     });
-    const label = 'BIO-SIGN' + (f.range ? `  ${f.range.toFixed(1)}m` : '');
-    tag(label, sx, sy - 6, GREEN);
+    let labelText = isKnown ? f.label.toUpperCase() : 'UNKNOWN';
+    if (isKnown && f.distance != null){
+      const conf = Math.max(0, Math.round((1 - f.distance) * 100));
+      labelText += `  ${conf}%`;
+    }
+    if (f.range) labelText += `  ${f.range.toFixed(1)}m`;
+    tag(labelText, sx, sy - 6, color);
   });
 }
-
 function drawTargetLines(){
   if (!lockedId) return;
   const L = detections.find(d => d.id === lockedId);
   if (!L) return;
-
   const [lcx, lcy] = toScreenBox([L.box[0] + L.box[2]/2, L.box[1] + L.box[3]/2, 0, 0]);
-
   ctx.setLineDash([5, 5]);
   ctx.font = '500 13px "Share Tech Mono", monospace';
-
   detections.forEach(d=>{
     if (d.id === lockedId) return;
     const dist = distanceBetween(L, d);
     if (dist == null || dist > 25) return;
-
     const [cx, cy] = toScreenBox([d.box[0] + d.box[2]/2, d.box[1] + d.box[3]/2, 0, 0]);
-
-    ctx.strokeStyle = 'rgba(255,176,32,.6)';
-    ctx.lineWidth = 1;
-    ctx.beginPath();
-    ctx.moveTo(lcx, lcy);
-    ctx.lineTo(cx, cy);
-    ctx.stroke();
-
+    ctx.strokeStyle = 'rgba(255,176,32,.6)'; ctx.lineWidth = 1;
+    ctx.beginPath(); ctx.moveTo(lcx, lcy); ctx.lineTo(cx, cy); ctx.stroke();
     ctx.fillStyle = 'rgba(255,176,32,.95)';
     ctx.fillText(dist.toFixed(1) + 'm', (lcx + cx)/2 + 8, (lcy + cy)/2 - 6);
   });
@@ -601,13 +1229,14 @@ function drawTargetLines(){
 
 /* ═══════════════════════ PANELS ═══════════════════════ */
 function updatePanels(){
-  document.getElementById('t-fps').textContent  = fps + ' FPS';
-  document.getElementById('t-obj').textContent  = detections.length;
-  document.getElementById('t-face').textContent = faces.length;
+  document.getElementById('t-fps').textContent   = fps + ' FPS';
+  document.getElementById('t-obj').textContent   = detections.length;
+  document.getElementById('t-face').textContent  = faces.length;
+  document.getElementById('t-known').textContent = labeledFaceDescriptors.length;
+  document.getElementById('t-facts').textContent = longTermFacts.length;
 
   const near = detections[0];
-  document.getElementById('t-near').textContent =
-    near && near.range ? `${near.cls} ${near.range.toFixed(1)}m` : '--';
+  document.getElementById('t-near').textContent = near && near.range ? `${near.cls} ${near.range.toFixed(1)}m` : '--';
 
   const locked = detections.find(d => d.id === lockedId);
   if (locked){
@@ -622,14 +1251,13 @@ function updatePanels(){
     targetEl.classList.remove('on');
   }
 }
-
 function setStatus(txt, mode){
   statusEl.textContent = txt;
   statusEl.className = '';
   if (mode === 'hot') statusEl.classList.add('hot');
   if (mode === 'err') statusEl.classList.add('err');
+  if (mode === 'ok')  statusEl.classList.add('ok');
 }
-
 function setLink(state){
   const el = document.getElementById('t-link');
   el.textContent = state;
@@ -641,27 +1269,17 @@ function setLink(state){
 
 /* ═══════════════════════ TAP TO LOCK ═══════════════════════ */
 canvas.addEventListener('pointerdown', (e)=>{
-  if (!vw) return;
+  if (!vw || privacyMode) return;
   const [vx, vy] = screenToVideo(e.clientX, e.clientY);
-
   let hit = null;
   for (const d of detections){
     const [x, y, w, h] = d.box;
     if (vx >= x && vx <= x + w && vy >= y && vy <= y + h){ hit = d; break; }
   }
-
   if (hit){
-    if (lockedTrackId === hit.trackId){
-      lockedTrackId = null; lockedId = null;
-      setStatus('SCANNING');
-    } else {
-      lockedTrackId = hit.trackId; lockedId = hit.id;
-      setStatus('TARGET LOCKED', 'hot');
-    }
-  } else {
-    lockedTrackId = null; lockedId = null;
-    setStatus('SCANNING');
-  }
+    if (lockedTrackId === hit.trackId){ lockedTrackId = null; lockedId = null; setStatus('SCANNING'); }
+    else { lockedTrackId = hit.trackId; lockedId = hit.id; setStatus('TARGET LOCKED', 'hot'); beep(1100, 60); }
+  } else { lockedTrackId = null; lockedId = null; setStatus('SCANNING'); }
 });
 
 /* ═══════════════════════ CLOCK ═══════════════════════ */
@@ -676,14 +1294,8 @@ setInterval(()=>{
 /* ═══════════════════════ SPEECH RECOGNITION ═══════════════════════ */
 function initRecognition(){
   if (recognitionRunning) return;
-
   const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
-  if (!SR){
-    setStatus('VOICE UNSUPPORTED', 'err');
-    logLine('err', 'Speech recognition not supported. Use Android Chrome.');
-    return;
-  }
-
+  if (!SR){ setStatus('VOICE UNSUPPORTED', 'err'); return; }
   recognition = new SR();
   recognition.continuous = true;
   recognition.interimResults = true;
@@ -696,72 +1308,48 @@ function initRecognition(){
       if (!r.isFinal) continue;
       if (i < handledIndex) continue;
       handledIndex = i + 1;
-
       const transcript = r[0].transcript.trim();
       if (!transcript) continue;
 
       if (awake){
-        if (transcript.length > 1){
-          sleep();
-          handleCommand(transcript);
-        }
+        if (transcript.length > 1){ sleep(); handleCommand(transcript); }
         continue;
       }
-
       const m = transcript.match(/\b(e\.?\s*v\.?|evie|e v)\b/i);
       if (m){
         const stripped = transcript.replace(m[0], '').replace(/^[\s,]+/, '').trim();
-        if (stripped.length > 1){
-          handleCommand(stripped);
-        } else {
-          wake();
-        }
+        if (stripped.length > 1) handleCommand(stripped);
+        else wake();
       }
     }
   };
-
   recognition.onerror = (ev)=>{
     if (ev.error === 'no-speech' || ev.error === 'aborted') return;
     if (ev.error === 'not-allowed' || ev.error === 'service-not-allowed'){
       setStatus('MIC BLOCKED', 'err');
-      logLine('err', 'Microphone blocked. Allow mic in Chrome settings.');
-      wantListen = false;
-      recognitionRunning = false;
+      wantListen = false; recognitionRunning = false;
       return;
     }
-    console.warn('SR error:', ev.error);
   };
-
   recognition.onend = ()=>{
     recognitionRunning = false;
     if (!wantListen) return;
     setTimeout(()=>{
       handledIndex = 0;
-      try {
-        recognition.start();
-        recognitionRunning = true;
-      } catch(e){}
+      try { recognition.start(); recognitionRunning = true; } catch(e){}
     }, CFG.restartDelayMs);
   };
-
-  wantListen = true;
-  handledIndex = 0;
-  try {
-    recognition.start();
-    recognitionRunning = true;
-  } catch(e){
-    console.warn('Recognition start failed:', e);
-  }
+  wantListen = true; handledIndex = 0;
+  try { recognition.start(); recognitionRunning = true; } catch(e){}
 }
-
 function wake(){
   awake = true;
   btnMic.classList.add('live');
   setStatus('LISTENING', 'hot');
+  beep(1000, 60);
   clearTimeout(wakeTimer);
   wakeTimer = setTimeout(sleep, CFG.wakeTimeoutMs);
 }
-
 function sleep(){
   awake = false;
   btnMic.classList.remove('live');
@@ -769,72 +1357,161 @@ function sleep(){
   clearTimeout(wakeTimer);
 }
 
-btnMic.addEventListener('click', ()=>{
-  if (!recognition){
-    setStatus('VOICE OFF', 'err');
-    // try to start it
-    wantListen = true;
-    initRecognition();
-    return;
-  }
-  if (awake) sleep();
-  else wake();
+let micPressTimer = null, micLongFired = false;
+btnMic.addEventListener('pointerdown', ()=>{
+  micLongFired = false;
+  micPressTimer = setTimeout(()=>{ micLongFired = true; openQmenu(); }, 600);
 });
+btnMic.addEventListener('pointerup', (e)=>{
+  clearTimeout(micPressTimer);
+  if (micLongFired) return;
+  e.preventDefault();
+  if (!recognition){ setStatus('VOICE OFF', 'err'); wantListen = true; initRecognition(); return; }
+  if (awake) sleep(); else wake();
+});
+btnMic.addEventListener('pointercancel', ()=>clearTimeout(micPressTimer));
 
 /* ═══════════════════════ COMMAND HANDLING ═══════════════════════ */
 async function handleCommand(text){
   logLine('u', text);
   const t = text.toLowerCase().replace(/^(hey\s+)?e\.?\s*v\.?[\s,]*/i, '').trim();
 
-  const wa = t.match(/whatsapp\s+(?:to\s+)?(\+?\d[\d\s\-\(\)]{5,}?)\s+(?:saying|that|message|telling)\s+(.+)/i);
-  if (wa){
-    sendWhatsApp(wa[1].trim(), wa[2].trim());
-    return;
+  if (/\b(enroll|register|remember|save)\b.*\bface\b/i.test(t) || /^enroll\b/.test(t)){
+    enrollCurrentFace(); return;
+  }
+  if (/\b(clear|delete|forget|remove)\b.*\b(faces|profiles|people)\b/i.test(t)){
+    clearAllFaces(); return;
+  }
+  if (/\bwho\b.*\b(do you see|is this|is that|am i looking)\b/i.test(t)){
+    const known = faces.filter(f => f.label !== 'UNKNOWN').map(f => f.label);
+    const total = faces.length;
+    let reply;
+    if (!total) reply = 'I do not see anyone in view.';
+    else if (known.length) reply = `I see ${total} face${total>1?'s':''}. Recognised: ${known.join(', ')}.`;
+    else reply = `I see ${total} face${total>1?'s':''}, none recognised.`;
+    logLine('a', reply); speak(reply); return;
   }
 
-  const sms = t.match(/(?:text|sms|message)\s+(?:to\s+)?(\+?\d[\d\s\-\(\)]{5,}?)\s+(?:saying|that|telling)\s+(.+)/i);
-  if (sms){
-    sendSMS(sms[1].trim(), sms[2].trim());
+  if (/\b(enable|turn on|activate)\b.*\bproactive\b/i.test(t)){
+    proactiveEnabled = true; localStorage.setItem('ev_proactive', '1');
+    updateProactiveUI(); logLine('a', 'Proactive mode enabled.'); speak('Proactive mode enabled.'); return;
+  }
+  if (/\b(disable|turn off|deactivate)\b.*\bproactive\b/i.test(t)){
+    proactiveEnabled = false; localStorage.setItem('ev_proactive', '0');
+    updateProactiveUI(); logLine('a', 'Proactive mode disabled.'); speak('Proactive mode disabled.'); return;
+  }
+
+  if (/\bweather\b/i.test(t)){
+    if (!weatherCache) await refreshWeather();
+    const w = weatherSummary();
+    const reply = w ? `Current conditions: ${w}.` : 'Weather data is not available. Ensure location is on.';
+    logLine('a', reply); speak(reply); return;
+  }
+
+  if (/\b(what('s| is) the )?(time|date)\b/i.test(t)){
+    const d = new Date();
+    const reply = `It is ${d.toLocaleTimeString()} on ${d.toLocaleDateString(undefined, { weekday:'long', month:'long', day:'numeric' })}.`;
+    logLine('a', reply); speak(reply); return;
+  }
+
+  if (/\b(what do you (know|remember)|recall|memory)\b/i.test(t)){
+    if (!longTermFacts.length){ const r = 'I have no stored facts about you yet.'; logLine('a', r); speak(r); return; }
+    const recent = longTermFacts.slice(-8).map(f => '• ' + f.text).join('\n');
+    logLine('a', `I know ${longTermFacts.length} things about you. Recent:\n${recent}`);
+    speak('I know ' + longTermFacts.length + ' facts about you.');
     return;
   }
+  if (/\b(forget|clear|delete)\b.*\b(memory|facts|everything you know)\b/i.test(t)){
+    clearAllFacts(); return;
+  }
+
+  if (/\b(enable|turn on|activate)\b.*\bscene analysis\b/i.test(t)){
+    CFG.sceneAnalysisEnabled = true;
+    logLine('a', 'Scene analysis enabled.');
+    speak('Scene analysis enabled.'); return;
+  }
+  if (/\b(disable|turn off|deactivate)\b.*\bscene analysis\b/i.test(t)){
+    CFG.sceneAnalysisEnabled = false;
+    logLine('a', 'Scene analysis disabled.');
+    speak('Scene analysis disabled.'); return;
+  }
+
+  if (/\b(read|scan|ocr|text)\b/i.test(t) && /\b(this|the|sign|page|book|text|words?)\b/i.test(t)){
+    readTextFromCamera(); return;
+  }
+
+  if (/\b(screenshot|capture|save the screen|take a picture of the hud)\b/i.test(t)){
+    takeScreenshot(); return;
+  }
+
+  if (/\b(privacy|stop watching|kill camera|stop camera)\b/i.test(t)){
+    togglePrivacy(); return;
+  }
+
+  if (/\b(stats|statistics|session|how long)\b/i.test(t) && /\b(session|stats|running|track)\b/i.test(t)){
+    const mins = Math.round((Date.now() - stats.startTs) / 60000);
+    const s = `Session: ${mins} min · ${stats.objectsSeen} objects · ${stats.facesSeen} faces · ${stats.events} events · ${stats.queries} queries`;
+    logLine('a', s); speak(`Session running for ${mins} minutes.`); return;
+  }
+
+  const wa = t.match(/whatsapp\s+(?:to\s+)?(\+?\d[\d\s\-\(\)]{5,}?)\s+(?:saying|that|message|telling)\s+(.+)/i);
+  if (wa){ sendWhatsApp(wa[1].trim(), wa[2].trim()); return; }
+  const sms = t.match(/(?:text|sms|message)\s+(?:to\s+)?(\+?\d[\d\s\-\(\)]{5,}?)\s+(?:saying|that|telling)\s+(.+)/i);
+  if (sms){ sendSMS(sms[1].trim(), sms[2].trim()); return; }
 
   let scene = '';
   if (/\b(scan|what do you see|report|status|surroundings|detect|look|describe)\b/.test(t)){
     scene = buildSceneReport();
   }
-
+  stats.queries++;
   const reply = await askAI(text, scene);
   logLine('a', reply);
   speak(reply);
+  addJournal('query', text + ' → ' + reply.slice(0, 120));
+  extractFactsFromTurn(text, reply).catch(()=>{});
 }
 
 function buildSceneReport(){
-  if (!detections.length && !faces.length) return 'No objects or faces detected in view.';
   const lines = [];
+  if (!detections.length && !faces.length && !weatherCache){
+    return 'No objects or faces detected.';
+  }
   if (detections.length){
-    lines.push('Objects detected:');
+    lines.push('Objects:');
     detections.slice(0, 8).forEach(d=>{
       lines.push(`- ${d.cls}, ${(d.score*100).toFixed(0)}%, ~${d.range ? d.range.toFixed(1) + 'm' : 'unknown'}`);
     });
   }
-  if (faces.length) lines.push(`Faces detected: ${faces.length}`);
+  if (faces.length){
+    const known = faces.filter(f => f.label !== 'UNKNOWN').map(f => f.label);
+    const unknown = faces.filter(f => f.label === 'UNKNOWN').length;
+    lines.push(`Faces: ${faces.length} total`);
+    if (known.length) lines.push(`- Recognised: ${known.join(', ')}`);
+    if (unknown > 0)  lines.push(`- Unknown: ${unknown}`);
+  }
   if (lockedId){
     const l = detections.find(d => d.id === lockedId);
-    if (l) lines.push(`Locked target: ${l.cls} at ~${l.range ? l.range.toFixed(1) + 'm' : 'unknown'}`);
+    if (l) lines.push(`Locked: ${l.cls} at ~${l.range ? l.range.toFixed(1) + 'm' : 'unknown'}`);
   }
+  const w = weatherSummary();
+  if (w) lines.push(`Weather: ${w}`);
+  if (batteryInfo) lines.push(`Battery: ${Math.round(batteryInfo.level*100)}%${batteryInfo.charging ? ' (charging)' : ''}`);
+  const d = new Date();
+  lines.push(`Time: ${d.toLocaleTimeString()}`);
   return lines.join('\n');
 }
 
 function sendWhatsApp(number, message){
   const clean = number.replace(/[\s\-\+\(\)]/g, '');
   logLine('a', 'Opening WhatsApp to ' + number);
+  addJournal('msg', 'WhatsApp to ' + number);
   speak('Opening WhatsApp.');
   location.href = `https://wa.me/${clean}?text=${encodeURIComponent(message)}`;
 }
-
 function sendSMS(number, message){
   const clean = number.replace(/[\s\-\+\(\)]/g, '');
   logLine('a', 'Opening SMS to ' + number);
+  addJournal('msg', 'SMS to ' + number);
   speak('Opening messages.');
   location.href = `sms:${clean}?body=${encodeURIComponent(message)}`;
 }
@@ -846,60 +1523,47 @@ try { history = JSON.parse(localStorage.getItem('ev_history') || '[]'); } catch(
 async function callLLM(messages, keyOverride){
   const key = keyOverride || API_KEY;
   let lastErr = 'Unknown error';
-
   for (const model of CFG.models){
     try {
       const ctrl = new AbortController();
       const to = setTimeout(()=>ctrl.abort(), CFG.fetchTimeoutMs);
-
       const res = await fetch(CFG.apiUrl, {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': 'Bearer ' + key
-        },
+        headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + key },
         body: JSON.stringify({ model, messages, max_tokens: 350, temperature: 0.7 }),
         signal: ctrl.signal
       });
-
       clearTimeout(to);
-
       if (!res.ok){
         const txt = await res.text();
         lastErr = `HTTP ${res.status} (${model}): ${txt.slice(0, 80)}`;
         continue;
       }
-
       const data = await res.json();
       const reply = data.choices?.[0]?.message?.content?.trim();
-      if (reply){
-        return { reply, model };
-      }
+      if (reply) return { reply, model };
       lastErr = `Empty reply from ${model}`;
     } catch(e){
       lastErr = e.name === 'AbortError' ? `Timeout (${model})` : `${model}: ${e.message}`;
     }
   }
-
   throw new Error(lastErr);
 }
 
 async function askAI(prompt, scene){
-  setStatus('PROCESSING');
-  setLink('BUSY');
+  setStatus('PROCESSING'); setLink('BUSY');
 
   const t = prompt.toLowerCase();
   const visualKeywords = /\b(see|look|read|watch|show|describe|this|that|here|there|color|colour|in front|behind|how many|is it|does it|can you see|scan|detect|spot|identify|recognize|far|close|near|distance|holding|what am i)\b/;
   const isVisual = visualKeywords.test(t) || !!scene;
 
   let userContent;
-  if (isVisual && vw > 0){
+  if (isVisual && vw > 0 && !privacyMode){
     const fc = document.createElement('canvas');
     fc.width = Math.min(vw, 1280);
     fc.height = Math.round(fc.width * vh / vw);
     fc.getContext('2d').drawImage(video, 0, 0, fc.width, fc.height);
     const dataUrl = fc.toDataURL('image/jpeg', 0.6);
-
     userContent = [
       { type: 'text', text: scene ? `SENSOR DATA:\n${scene}\n\nUSER: ${prompt}` : prompt },
       { type: 'image_url', image_url: { url: dataUrl, detail: 'low' } }
@@ -908,13 +1572,22 @@ async function askAI(prompt, scene){
     userContent = prompt;
   }
 
-  const system = `You are E.V., Peter Parker's self-built tactical AI assistant.
+  const d = new Date();
+  let system = `You are E.V., Peter Parker's self-built tactical AI assistant.
 Speak like a calm, precise field AI: short sentences, dry wit, no filler.
 You have full knowledge of the world — science, history, math, technology, culture, everything.
 Answer ANY question the user asks, whether or not it relates to what you can see.
 When a camera frame is attached, describe or analyze it as requested.
 If an image is attached, you CAN see it. Never say "I cannot see".
-Never mention that you are a language model.`;
+Never mention that you are a language model.
+
+Current local date and time: ${d.toLocaleString()}`;
+
+  const relevantFacts = getRelevantFacts(prompt);
+  if (relevantFacts) system += `\n\nKnown facts about the user:\n${relevantFacts}`;
+  const w = weatherSummary();
+  if (w) system += `\n\nCurrent local weather: ${w}`;
+  if (batteryInfo) system += `\n\nDevice battery: ${Math.round(batteryInfo.level*100)}%${batteryInfo.charging ? ' (charging)' : ''}`;
 
   const messages = [
     { role: 'system', content: system },
@@ -924,67 +1597,55 @@ Never mention that you are a language model.`;
 
   try {
     const { reply } = await callLLM(messages);
-
     history.push({ role: 'user', content: prompt });
     history.push({ role: 'assistant', content: reply });
     if (history.length > 16) history = history.slice(-16);
     localStorage.setItem('ev_history', JSON.stringify(history));
-
-    setLink('OK');
-    setStatus('SCANNING');
+    setLink('OK'); setStatus('SCANNING');
     return reply;
   } catch(e){
     logLine('err', e.message);
-    setLink('ERR');
-    setStatus('LINK ERROR', 'err');
+    setLink('ERR'); setStatus('LINK ERROR', 'err');
     return 'Connection error. Check the log.';
   }
 }
 
 /* ═══════════════════════ TTS ═══════════════════════ */
 let cachedVoices = [];
-
-function loadVoices(){
-  cachedVoices = speechSynthesis.getVoices();
-}
-
+function loadVoices(){ try{ cachedVoices = speechSynthesis.getVoices() || []; }catch(_){ cachedVoices = []; } }
 if ('speechSynthesis' in window){
   loadVoices();
   speechSynthesis.onvoiceschanged = loadVoices;
 }
-
 function speak(text){
   try {
     if (!('speechSynthesis' in window)) return;
     speechSynthesis.cancel();
     const u = new SpeechSynthesisUtterance(text);
-    u.rate = 1.02;
-    u.pitch = 0.95;
-    u.volume = 1;
+    u.rate = 1.02; u.pitch = 0.95; u.volume = 1;
     if (!cachedVoices.length) loadVoices();
     const pref = cachedVoices.find(v => /Google UK English Male|Daniel|Alex/.test(v.name));
     if (pref) u.voice = pref;
     speechSynthesis.speak(u);
-  } catch(e){ /* ignore */ }
+  } catch(e){}
 }
 
 /* ═══════════════════════ LOG ═══════════════════════ */
 let logHideTimer = null;
-
 function logLine(who, text){
   logEl.classList.add('on');
   const div = document.createElement('div');
   div.className = 'line ' + who;
-  if (who === 'u')       div.innerHTML = `<b>YOU ▸</b> ${escapeHtml(text)}`;
-  else if (who === 'a')  div.innerHTML = `<b>E.V. ▸</b> ${escapeHtml(text)}`;
-  else                   div.innerHTML = `<b>ERR ▸</b> ${escapeHtml(text)}`;
+  if (who === 'u')        div.innerHTML = `<b>YOU ▸</b> ${escapeHtml(text)}`;
+  else if (who === 'a')   div.innerHTML = `<b>E.V. ▸</b> ${escapeHtml(text)}`;
+  else if (who === 'evt') div.innerHTML = `<b>EVT ▸</b> ${escapeHtml(text)}`;
+  else                    div.innerHTML = `<b>ERR ▸</b> ${escapeHtml(text)}`;
   logEl.appendChild(div);
   logEl.scrollTop = logEl.scrollHeight;
   while (logEl.children.length > 14) logEl.removeChild(logEl.firstChild);
   clearTimeout(logHideTimer);
   logHideTimer = setTimeout(()=>logEl.classList.remove('on'), 15000);
 }
-
 function escapeHtml(s){
   return String(s).replace(/[&<>"']/g, c => ({
     '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'
