@@ -370,5 +370,7 @@ const esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;'
 $('bc').onclick=()=>{hist=[];localStorage.removeItem('acie_history');logEl.innerHTML='';logEl.classList.remove('on');setStatus('CLEARED');setTimeout(()=>setStatus('SCANNING'),1400)};
 $('tf').addEventListener('submit',e=>{e.preventDefault();const t=$('ti').value.trim();if(!t)return;$('ti').value='';$('ti').blur();handle(t)});
 
-if(!KEY){showSetup();setStatus('SETUP REQUIRED','hot')}else start();
+if(!KEY){showSetup();setStatus('SETUP REQUIRED','hot')}
+else if(window.__ready) start();
+else window.addEventListener('acie:ready', start, {once:true});
 </script></body></html>
