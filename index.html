@@ -134,12 +134,12 @@ body{margin:0;height:100vh;overflow:hidden;background:#050608;color:var(--r);fon
 <button id="q7">📊 CSV Export</button><button id="q8">🎤 Voice</button>
 <button id="q9">🛑 Privacy</button><button id="q10">🕐 Time</button>
 <button id="q11">🧭 Compass</button><button id="q12">🔍 Zoom Reset</button>
+<button id="q13">🔄 Flip Camera</button>
 </div><button class="cl" id="qc">Close</button></div>
 <div id="fl"></div>
 
 <script>
 'use strict';
-/* ═══ LOCAL-FIRST SCRIPT LOADER WITH CDN FALLBACK ═══ */
 async function loadScript(urls){
   for (const u of urls){
     try { await new Promise((res,rej)=>{const s=document.createElement('script');s.src=u;s.async=false;s.onload=res;s.onerror=rej;document.head.appendChild(s)}); console.log('[A.C.I.E.] loaded',u); return true; }
@@ -165,6 +165,7 @@ const cam=$('cam'),cv=$('cv'),ctx=cv.getContext('2d'),logEl=$('log');
 let KEY=(localStorage.getItem('acie_key')||'').trim();
 let objM=null,faceReady=false,matcher=null;
 let vw=0,vh=0,cssW=0,cssH=0,dpr=1,scl=1,ox=0,oy=0,fp=0;
+let facing=localStorage.getItem('acie_facing')||'environment';
 let det=[],faces=[],tracks=[],nid=0,lockId=null,fr=0,fps=0,fa=0,fc=0;
 let awake=false,wantL=false,wakeT=null,rec=null,hIdx=0,booted=false,recRun=false;
 let known=[],proOn=(localStorage.getItem('acie_proactive')||'0')==='1';
@@ -204,7 +205,29 @@ $('sv').onclick=()=>{const v=$('sk').value.trim();if(!v){$('sm').className='err'
 
 function start(){if(booted)return;booted=true;setStatus('STARTING');startCam();loadModels();loadFacts();upPro();upMenu();setInterval(webTick,1000);setTimeout(initRec,800);initCompass();setupZoom();}
 
-function startCam(){if(!navigator.mediaDevices?.getUserMedia){setStatus('CAM UNSUPPORTED','err');return}navigator.mediaDevices.getUserMedia({video:{facingMode:{ideal:'environment'},width:{ideal:1920},height:{ideal:1080}},audio:false}).then(s=>{cam.srcObject=s;cam.onloadedmetadata=()=>{vw=cam.videoWidth;vh=cam.videoHeight;computeVT();fp=(vw/2)/Math.tan(S.fov*Math.PI/360)}}).catch(e=>{setStatus('CAMERA DENIED','err');logLine('err','Cam: '+e.message)})}
+function startCam(){if(!navigator.mediaDevices?.getUserMedia){setStatus('CAM UNSUPPORTED','err');return}navigator.mediaDevices.getUserMedia({video:{facingMode:{ideal:facing},width:{ideal:1920},height:{ideal:1080}},audio:false}).then(s=>{cam.srcObject=s;cam.onloadedmetadata=()=>{vw=cam.videoWidth;vh=cam.videoHeight;computeVT();fp=(vw/2)/Math.tan(S.fov*Math.PI/360)}}).catch(e=>{setStatus('CAMERA DENIED','err');logLine('err','Cam: '+e.message)})}
+
+async function flipCamera(){
+  facing = facing==='environment' ? 'user' : 'environment';
+  localStorage.setItem('acie_facing', facing);
+  toast('Camera: '+(facing==='user'?'front':'back'));
+  if(cam.srcObject) cam.srcObject.getTracks().forEach(t=>t.stop());
+  cam.srcObject = null;
+  det=[]; faces=[]; tracks=[]; lockId=null;
+  try{
+    const s = await navigator.mediaDevices.getUserMedia({video:{facingMode:{ideal:facing},width:{ideal:1920},height:{ideal:1080}},audio:false});
+    cam.srcObject = s;
+    cam.onloadedmetadata = ()=>{
+      vw = cam.videoWidth; vh = cam.videoHeight;
+      computeVT();
+      fp = (vw/2)/Math.tan(S.fov*Math.PI/360);
+    };
+    beep(900, 60);
+  }catch(e){
+    logLine('err','Flip: '+e.message);
+    toast('Flip failed',1);
+  }
+}
 
 function initCompass(){if(!window.DeviceOrientationEvent)return;const h=e=>{if(e.webkitCompassHeading!=null)heading=e.webkitCompassHeading;else if(e.alpha!=null)heading=360-e.alpha;if(heading!=null){const d=['N','NE','E','SE','S','SW','W','NW'];T('cmp',`${Math.round(heading)}° ${d[Math.round(heading/45)%8]}`)}};if(typeof DeviceOrientationEvent.requestPermission==='function'){document.addEventListener('pointerdown',()=>{DeviceOrientationEvent.requestPermission().then(r=>{if(r==='granted')window.addEventListener('deviceorientation',h,true)}).catch(()=>{})},{once:true})}else window.addEventListener('deviceorientation',h,true)}
 
@@ -286,6 +309,7 @@ bind('q9',()=>{closeQM();togglePriv()});
 bind('q10',()=>{closeQM();const d=new Date();const m=`It's ${d.toLocaleTimeString()}, ${d.toLocaleDateString(undefined,{weekday:'long',month:'long',day:'numeric'})}.`;logLine('a',m);speak(m)});
 bind('q11',()=>{closeQM();if(heading!=null){const m=`Heading ${Math.round(heading)} degrees.`;logLine('a',m);speak(m)}else{toast('Compass off',1)}});
 bind('q12',()=>{closeQM();resetZoom()});
+bind('q13',()=>{closeQM();flipCamera()});
 bind('qc',closeQM);
 
 function draw(){ctx.clearRect(0,0,cssW,cssH);if(!priv){webGrid();if(ringsOn)rangeB();drawObj();drawAnc();drawFaces();drawLines()}updatePanels()}
@@ -332,6 +356,7 @@ if(/\b(read|scan|ocr|text)\b/i.test(t)&&/\b(this|the|sign|page|book|text|words?)
 if(/\b(screenshot|capture)\b/i.test(t)){shot();return}
 if(/\b(export|download|save).*(csv|detections|data)\b/i.test(t)){expCSV();return}
 if(/\b(privacy|stop watching|kill camera)\b/i.test(t)){togglePriv();return}
+if(/\b(flip|switch|swap).*(camera|front|back)\b/i.test(t)){flipCamera();return}
 if(/\b(what('s| is) the )?(time|date)\b/i.test(t)){const d=new Date();const r=`It's ${d.toLocaleTimeString()} on ${d.toLocaleDateString(undefined,{weekday:'long',month:'long',day:'numeric'})}.`;logLine('a',r);speak(r);return}
 if(/\b(compass|heading|direction)\b/i.test(t)){if(heading!=null){const r=`Heading ${Math.round(heading)} degrees.`;logLine('a',r);speak(r)}else{logLine('a','Compass off.');speak('Compass off.')}return}
 if(/\bweb\s*(fluid|shooters?|status)\b/i.test(t)){const r=`Fluid ${Math.round(web.fluid)}%, ${web.psi} PSI, ${web.cart} cartridges.`;logLine('a',r);speak(r);return}
